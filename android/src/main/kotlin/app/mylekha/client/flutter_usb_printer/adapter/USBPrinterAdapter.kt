@@ -53,14 +53,14 @@ class USBPrinterAdapter {
                         if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
                             Log.i(
                                 LOG_TAG,
-                                "Success to grant permission for device " + usbDevice?.deviceId + ", vendor_id: " + usbDevice.vendorId + " product_id: " + usbDevice.productId
+                                "Success to grant permission for device " + usbDevice!!.deviceId + ", vendor_id: " + usbDevice.vendorId + " product_id: " + usbDevice.productId
                             )
                             mUsbDevice = usbDevice
                         } else {
                             Toast.makeText(
                                 context,
-                                "User refused to give USB device permissions" + usbDevice?.deviceName : "",
-                            Toast.LENGTH_LONG
+                                "User refused to give USB device permissions: ${usbDevice?.deviceName ?: "Unknown device"}",
+                                Toast.LENGTH_LONG
                             ).show()
                         }
                     } else {
