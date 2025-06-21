@@ -35,8 +35,6 @@ class USBPrinterAdapter {
     private val ACTION_USB_PERMISSION = "app.mylekha.client.flutter_usb_printer.USB_PERMISSION"
 
 
-
-
     fun getInstance(): USBPrinterAdapter? {
         if (mInstance == null) {
             mInstance = this;
@@ -51,19 +49,28 @@ class USBPrinterAdapter {
                 synchronized(this) {
                     val usbDevice =
                         intent.getParcelableExtra<UsbDevice>(UsbManager.EXTRA_DEVICE)
-                    if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
-                        Log.i(
-                            LOG_TAG,
-                            "Success to grant permission for device " + usbDevice!!.deviceId + ", vendor_id: " + usbDevice.vendorId + " product_id: " + usbDevice.productId
-                        )
-                        mUsbDevice = usbDevice
+                    if (usbDevice != null) {
+                        if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
+                            Log.i(
+                                LOG_TAG,
+                                "Success to grant permission for device " + usbDevice?.deviceId + ", vendor_id: " + usbDevice.vendorId + " product_id: " + usbDevice.productId
+                            )
+                            mUsbDevice = usbDevice
+                        } else {
+                            Toast.makeText(
+                                context,
+                                "User refused to give USB device permissions" + usbDevice?.deviceName : "",
+                            Toast.LENGTH_LONG
+                            ).show()
+                        }
                     } else {
                         Toast.makeText(
                             context,
-                            "User refused to give USB device permissions" + usbDevice!!.deviceName,
-                            Toast.LENGTH_LONG
+                            "Error: USB device not found.",
+                        Toast.LENGTH_LONG
                         ).show()
                     }
+
                 }
             } else if (UsbManager.ACTION_USB_DEVICE_DETACHED == action) {
                 if (mUsbDevice != null) {
