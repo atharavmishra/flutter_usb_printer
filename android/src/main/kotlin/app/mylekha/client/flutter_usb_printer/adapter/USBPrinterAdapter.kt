@@ -239,4 +239,26 @@ class USBPrinterAdapter {
             false
         }
     }
+    fun read(): ByteArray? {
+        Log.v(LOG_TAG, "start to read data")
+        val isConnected = openConnection()
+        return if (isConnected) {
+            Log.v(LOG_TAG, "Connected to device for reading")
+            // Note: Reading from a printer might require a different endpoint or setup
+            // This is a basic implementation and might not work for all printers
+            val buffer = ByteArray(mEndPoint?.maxPacketSize ?: 64)
+            val bytesRead = mUsbDeviceConnection!!.bulkTransfer(mEndPoint, buffer, buffer.size, 5000) // 5 second timeout
+
+            if (bytesRead >= 0) {
+                Log.i(LOG_TAG, "Bytes read: $bytesRead")
+                buffer.copyOf(bytesRead)
+            } else {
+                Log.e(LOG_TAG, "Failed to read data, bulkTransfer returned: $bytesRead")
+                null
+            }
+        } else {
+            Log.v(LOG_TAG, "failed to connected to device for reading")
+            null
+        }
+    }
 }

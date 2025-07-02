@@ -65,4 +65,9 @@ class FlutterUsbPrinter {
     final bool? result = await _channel.invokeMethod('write', params);
     return result;
   }
+
+  Future<Uint8List?> read() async {
+    final Uint8List? result = await _channel.invokeMethod('read');
+    return result;
+  }
 }
