@@ -49,26 +49,29 @@ class USBPrinterAdapter {
             val action = intent.action
             if (ACTION_USB_PERMISSION == action) {
                 synchronized(this) {
-                    val usbDevice =
-                        intent.getParcelableExtra<UsbDevice>(UsbManager.EXTRA_DEVICE)
+                    val usbDevice = intent.getParcelableExtra<UsbDevice>(UsbManager.EXTRA_DEVICE)
+                    if (usbDevice == null) {
+                        Log.e(LOG_TAG, "usbDevice is null in USB permission broadcast")
+                        return
+                    }
+
                     if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
                         Log.i(
                             LOG_TAG,
-                            "Success to grant permission for device " + usbDevice!!.deviceId + ", vendor_id: " + usbDevice.vendorId + " product_id: " + usbDevice.productId
+                            "Success to grant permission for device ${usbDevice.deviceId}, vendor_id: ${usbDevice.vendorId} product_id: ${usbDevice.productId}"
                         )
                         mUsbDevice = usbDevice
                     } else {
                         Toast.makeText(
                             context,
-                            "User refused to give USB device permissions" + usbDevice!!.deviceName,
+                            "User refused to give USB device permissions for ${usbDevice.deviceName}",
                             Toast.LENGTH_LONG
                         ).show()
                     }
                 }
             } else if (UsbManager.ACTION_USB_DEVICE_DETACHED == action) {
                 if (mUsbDevice != null) {
-                    Toast.makeText(context, "USB device has been turned off", Toast.LENGTH_LONG)
-                        .show()
+                    Toast.makeText(context, "USB device has been turned off", Toast.LENGTH_LONG).show()
                     closeConnectionIfExists()
                 }
             }
