@@ -84,17 +84,11 @@ class USBPrinterAdapter {
         mUSBManager = mContext!!.getSystemService(Context.USB_SERVICE) as UsbManager
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
             mPermissionIndent = PendingIntent.getBroadcast(
-                mContext!!,
-                0,
-                Intent(ACTION_USB_PERMISSION),
-                PendingIntent.FLAG_IMMUTABLE
+                mContext!!, 0, Intent(ACTION_USB_PERMISSION), PendingIntent.FLAG_IMMUTABLE
             )
         } else {
             mPermissionIndent = PendingIntent.getBroadcast(
-                mContext!!,
-                0,
-                Intent(ACTION_USB_PERMISSION),
-                0
+                mContext!!, 0, Intent(ACTION_USB_PERMISSION), 0
             )
         }
 //        mPermissionIndent =
@@ -124,9 +118,7 @@ class USBPrinterAdapter {
     fun getDeviceList(): List<UsbDevice> {
         if (mUSBManager == null) {
             Toast.makeText(
-                mContext,
-                "USB Manager is not initialized while get device list",
-                Toast.LENGTH_LONG
+                mContext, "USB Manager is not initialized while get device list", Toast.LENGTH_LONG
             ).show()
             return emptyList()
         }
@@ -216,11 +208,9 @@ class USBPrinterAdapter {
             Thread {
                 val bytes = text.toByteArray(Charset.forName("UTF-8"))
                 val b = mUsbDeviceConnection!!.bulkTransfer(
-                    mEndPointOut,
-                    bytes,
-                    bytes.size,
-                    100000
-                ) Log . i (LOG_TAG, "Return Status: b-->$b")
+                    mEndPointOut, bytes, bytes.size, 100000
+                )
+                Log.i(LOG_TAG, "Return Status: b-->$b")
             }.start()
             true
         } else {
@@ -237,10 +227,7 @@ class USBPrinterAdapter {
             Thread {
                 val bytes = Base64.decode(data, Base64.DEFAULT)
                 val b = mUsbDeviceConnection!!.bulkTransfer(
-                    mEndPointOut,
-                    bytes,
-                    bytes.size,
-                    100000
+                    mEndPointOut, bytes, bytes.size, 100000
                 ) Log . i (LOG_TAG, "Return Status: $b")
             }.start()
             true
@@ -257,10 +244,7 @@ class USBPrinterAdapter {
             Log.v(LOG_TAG, "Connected to device")
             Thread {
                 val b = mUsbDeviceConnection!!.bulkTransfer(
-                    mEndPointOut,
-                    bytes,
-                    bytes.size,
-                    100000
+                    mEndPointOut, bytes, bytes.size, 100000
                 ) Log . i (LOG_TAG, "Return Status: $b")
             }.start()
             true
@@ -291,10 +275,7 @@ class USBPrinterAdapter {
 
         val buffer = ByteArray(mEndPointIn!!.maxPacketSize)
         val bytesRead = mUsbDeviceConnection!!.bulkTransfer(
-            mEndPointIn,
-            buffer,
-            buffer.size,
-            5000 // timeout in ms
+            mEndPointIn, buffer, buffer.size, 5000 // timeout in ms
         )
 
         return if (bytesRead >= 0) {
