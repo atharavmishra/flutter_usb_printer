@@ -228,7 +228,8 @@ class USBPrinterAdapter {
                 val bytes = Base64.decode(data, Base64.DEFAULT)
                 val b = mUsbDeviceConnection!!.bulkTransfer(
                     mEndPointOut, bytes, bytes.size, 100000
-                ) Log.i (LOG_TAG, "Return Status: $b")
+                )
+                Log.i(LOG_TAG, "Return Status: $b")
             }.start()
             true
         } else {
@@ -245,7 +246,8 @@ class USBPrinterAdapter {
             Thread {
                 val b = mUsbDeviceConnection!!.bulkTransfer(
                     mEndPointOut, bytes, bytes.size, 100000
-                ) Log.i (LOG_TAG, "Return Status: $b")
+                )
+                Log.i(LOG_TAG, "Return Status: $b")
             }.start()
             true
         } else {
