@@ -12,6 +12,10 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 /** FlutterUsbPrinterPlugin */
@@ -74,8 +78,20 @@ class FlutterUsbPrinterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
     }
 
     private fun read(result: Result) {
-        val data = adapter?.read()
-        return result.success(data)
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val data = adapter?.read()
+
+                withContext(Dispatchers.Main) {
+                    result.success(data)
+                }
+
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    result.error("USB_READ_ERROR", e.message, null)
+                }
+            }
+        }
     }
 
     private fun getUSBDeviceList(result: Result) {
